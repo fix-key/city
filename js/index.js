@@ -5,6 +5,7 @@ let arr_match = []
 // 截取的数组
 let arr_slice = []
 
+// 发送 ajax 请求
 $.ajax({
     // url
     url: 'https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json',
@@ -19,9 +20,10 @@ $.ajax({
         // 只获取 100 条
         arr_db = data.slice(0, 100);
         arr_match = arr_db;
+        // 截取 5 条数据
         arr_slice = arr_match.slice(0, 5);
 
-        init(arr_slice);
+        // 调用分页条和数据渲染函数
         pagination()
     },
     // 超时时间
@@ -65,12 +67,15 @@ function search() {
     $('#search_ico').on('click', function () {
         if ($('#city').val().trim()) {
             if (arr_match.length != 0) {
+                // 有数据就渲染数据和搜索框 
                 pagination();
             } else {
+                // 没有数据，则显示提示语（暂无相关搜索）
                 $('.info_wrap').html(`<p class="info_null">暂无相关搜索</p>`);
             }
 
         } else {
+            // 如果没有数据，则全部匹配全部
             arr_match = arr_db;
             pagination();
             // $('.info_wrap').html(`<p class="info_null">暂无相关搜索</p>`);
@@ -79,11 +84,13 @@ function search() {
 
     // 键盘事件，根据键盘输入的字符检索数据
     $('#city').on('keyup', (e) => {
-        // 搜索框添加数据，显示搜索提示框
+        // 判断搜索框是否有数据
         if ($('#city').val().trim()) {
+            // 先清空
             arr_match = [];
             $('.search_box').stop().remove();
 
+            // 再渲染
             $('.search').append(`<ul class='search_box'></ul>`)
 
             // 判断是否匹配到数据
@@ -94,6 +101,8 @@ function search() {
                     $('.search_box').stop().hide();
                 }
             })
+
+            // 鼠标离开就让搜索提示框消失
             $('.search_box').stop().slideDown(function () {
                 $('.search_box').on('mouseleave', function () {
                     $('.search_box').stop().slideUp().remove();
@@ -214,18 +223,24 @@ function pagination() {
 
     // 跳转到指定页面
     function LetGo() {
+        // 正则匹配 个位数[1-9] 个位数后的位数[0-9]
         let regNum = /^[1-9][0-9]*$/
 
+        // 键盘事件
         $('#go').on('keyup', function (e) {
+            // 判断是否回车
             if (e.keyCode === 13) {
+                // 判断是否有内容
                 if ($('#go').val().trim()) {
+                    // 判断是否数值
                     if (regNum.test($('#go').val())) {
+                        // 页数不能大于总页数
                         if (page_count >= parseInt($('#go').val())) {
                             page_now = parseInt($('#go').val());
                             init_pagination();
                         } else {
                             $('#go').val('');
-                            alert(`没有该页数, 您可以输入 ${page_count} 页内的数值`);
+                            alert(`没有该页数, 您可以输入大于 0, 并且小于 ${page_count} 页内的数值`);
                         }
 
                     } else {
@@ -258,7 +273,7 @@ function pagination() {
         let arr_page_slice = arr_page.slice((page_num - 1) * 3, page_num * 3);
         // console.log(arr_page_slice);
 
-        // 渲染页码条
+        // 渲染分页条
         // 动态生成 span 标签
         $('.pagination span').remove();
         for (var i = 0; i < arr_page_slice.length; i++) {
