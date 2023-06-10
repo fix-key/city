@@ -28,7 +28,7 @@ $.ajax({
     timeout: 2000,
     // 失败的回调
     error: function () {
-        console.log('出错啦!!');
+        alert('出错啦!!');
     },
 });
 
